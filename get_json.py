@@ -36,10 +36,5 @@ async def hello():
     return "Ciao"
 
 
-
-
-# Esegui l'applicazione con il comando: uvicorn nome_file:app --reload
-
-
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
