@@ -1,4 +1,5 @@
 import sys
+sys.path.append("C:/Users/Alternanza/Documents/GitHub/alternanza")
 import uvicorn
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
@@ -10,7 +11,7 @@ from image_utils import preproces_image
 from predictor import predict
 import logging
 
-sys.path.append("C:/Users/Alternanza/Documents/GitHub/alternanza")
+
 
 app = FastAPI()
 
