@@ -1,0 +1,9 @@
+2024-07-15 17:26:35,972 - DEBUG - removed file: C:/Users/Alternanza/Documents/GitHub/json_server/files/719GLsRGPDL._AC_SL1500_.jpg
+2024-07-15 17:26:35,972 - INFO - pulizia cartella completata
+2024-07-15 17:26:43,907 - INFO - creazione cartella completata
+2024-07-15 17:26:43,908 - INFO - salvataggio file completato
+2024-07-15 17:26:43,931 - INFO - caricamento immagine completato
+2024-07-15 17:26:43,934 - INFO - processamento immagine completato
+2024-07-15 17:26:44,722 - INFO - predizione completata
+2024-07-15 17:29:23,862 - DEBUG - removed file: C:/Users/Alternanza/Documents/GitHub/json_server/files/719GLsRGPDL._AC_SL1500_.jpg
+2024-07-15 17:29:23,862 - INFO - pulizia cartella completata
