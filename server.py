@@ -72,9 +72,7 @@ def resize_image(file: UploadFile = File(...), altezza: int = Form(...), larghez
 
     img_path = save_location + file.filename
     create_save_location(save_location)
-    logger.info("creazione cartella completata")
     save_file(file, img_path)
-    logger.info("salvataggio file completato")
 
     img = load_image(img_path)
     logger.info("immagine caricata")
@@ -84,6 +82,7 @@ def resize_image(file: UploadFile = File(...), altezza: int = Form(...), larghez
 
     save_image(img_resized, img_path)
     logger.info("immagine processata salvata")
+    
     return FileResponse(img_path)
 
 
