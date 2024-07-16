@@ -19,4 +19,3 @@ def setuplog(log_path):  # TODO fix doppio dei log
     logger.addHandler(console_handler)
     logger.addHandler(file_handler)
 
-    return logger
