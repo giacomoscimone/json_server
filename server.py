@@ -2,12 +2,12 @@ import sys
 
 sys.path.append("C:/Users/Alternanza/Documents/GitHub/alternanza")
 import uvicorn
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.responses import JSONResponse, FileResponse
 import shutil
 import os
 from io_utils import load_model, load_image, save_image
-from image_utils import preproces_image, grayscale
+from image_utils import preproces_image, grayscale, resize
 from predictor import predict
 import logging
 
@@ -98,6 +98,26 @@ def converct_grayscale(file: UploadFile = File(...)):
     logger.info("immagine processata")
 
     save_image(img_gray, img_path)
+    logger.info("immagine processata salvata")
+    return FileResponse(img_path)
+
+
+@app.post("/resize-image/")
+def resize_image(file: UploadFile = File(...), altezza: int = Form(...), larghezza: int = Form(...)):
+
+    img_path = save_location + file.filename
+    create_save_location(save_location)
+    logger.info("creazione cartella completata")
+    save_file(file, img_path)
+    logger.info("salvataggio file completato")
+
+    img = load_image(img_path)
+    logger.info("immagine caricata")
+
+    img_resized = resize(img, altezza, larghezza)
+    logger.info("immagine processata")
+
+    save_image(img_resized, img_path)
     logger.info("immagine processata salvata")
     return FileResponse(img_path)
 
