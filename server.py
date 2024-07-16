@@ -14,25 +14,29 @@ from logger_utils import setuplog
 from io_utility import create_save_location, clean_up, save_file
 from constant_endpoint import PATH_UPLOAD, PATH_GRAYSCALE
 from constant_path import MODEL_PATH, save_location, log_path
+import logging
 
 app = FastAPI()
 
 MODEL = load_model(MODEL_PATH)
 
+logger = logging.getLogger('my_logger')
+
 
 @app.post(PATH_UPLOAD)
 def upload_image(file: UploadFile = File(...)):
     logger.info("chiamata endpoint: " + PATH_UPLOAD)
+
     img_path = save_location + file.filename
     create_save_location(save_location)
-    logger.info("creazione cartella completata")
     save_file(file, img_path)
-    logger.info("salvataggio file completato")
 
     original_image = load_image(img_path)
     logger.info("caricamento immagine completato")
+
     process_image = preproces_image(original_image)
     logger.info("processamento immagine completato")
+
     classe, confidence = predict(process_image, MODEL)
     logger.info("predizione completata")
 
@@ -49,9 +53,7 @@ def convert_grayscale(file: UploadFile = File(...)):
 
     img_path = save_location + file.filename
     create_save_location(save_location)
-    logger.info("creazione cartella completata")
     save_file(file, img_path)
-    logger.info("salvataggio file completato")
 
     img = load_image(img_path)
     logger.info("immagine caricata")
@@ -61,12 +63,12 @@ def convert_grayscale(file: UploadFile = File(...)):
 
     save_image(img_gray, img_path)
     logger.info("immagine processata salvata")
+
     return FileResponse(img_path)
 
 
 if __name__ == "__main__":
-    logger = setuplog(log_path)
-    clean_up(save_location, logger)
-    logger.info("pulizia cartella completata")
+    setuplog(log_path)
+    clean_up(save_location)
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
