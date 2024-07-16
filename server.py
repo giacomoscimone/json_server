@@ -1,66 +1,28 @@
 import sys
 
+
 sys.path.append("C:/Users/Alternanza/Documents/GitHub/alternanza")
+
+
 import uvicorn
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse, FileResponse
-import shutil
-import os
 from io_utils import load_model, load_image, save_image
 from image_utils import preproces_image, grayscale
 from predictor import predict
-import logging
+from logger_utils import setuplog
+from io_utility import create_save_location, clean_up, save_file
+from constant_endpoint import PATH_UPLOAD, PATH_GRAYSCALE
+from constant_path import MODEL_PATH, save_location, log_path
 
 app = FastAPI()
-
-original = 'C:/Users/Alternanza/Documents/GitHub/json_server'
-
-MODEL_PATH = 'C:\\Users\\Alternanza\\Downloads\\keras_model.h5'
-
-save_location = original + '/files/'
-
-log_path = original + '/log/info.txt'
 
 MODEL = load_model(MODEL_PATH)
 
 
-logger = logging.getLogger('my_logger')
-logger.setLevel(logging.DEBUG)
-
-file_handler = logging.FileHandler(log_path)
-file_handler.setLevel(logging.DEBUG)
-
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.INFO)
-
-formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-
-console_handler.setFormatter(formatter)
-file_handler.setFormatter(formatter)
-
-logger.addHandler(console_handler)
-logger.addHandler(file_handler)
-
-
-def clean_up(location_path: str) -> None:
-    file_list = os.listdir(location_path)
-
-    for file_path in file_list:
-        os.remove(location_path + file_path)
-        logger.debug(f"removed file: {location_path + file_path}")
-
-
-def create_save_location(save_location: str) -> None:
-    os.makedirs(save_location, exist_ok=True)
-
-
-def save_file(file, save_location: str) -> None:
-    with open(save_location, "wb+") as file_object:
-        shutil.copyfileobj(file.file, file_object)
-
-
-@app.post("/upload-image/")
+@app.post(PATH_UPLOAD)
 def upload_image(file: UploadFile = File(...)):
+    logger.info("chiamata endpoint: " + PATH_UPLOAD)
     img_path = save_location + file.filename
     create_save_location(save_location)
     logger.info("creazione cartella completata")
@@ -82,8 +44,8 @@ def upload_image(file: UploadFile = File(...)):
     )
 
 
-@app.post("/grayscale/")
-def converct_grayscale(file: UploadFile = File(...)):
+@app.post(PATH_GRAYSCALE)
+def convert_grayscale(file: UploadFile = File(...)):
 
     img_path = save_location + file.filename
     create_save_location(save_location)
@@ -103,7 +65,8 @@ def converct_grayscale(file: UploadFile = File(...)):
 
 
 if __name__ == "__main__":
-    clean_up(save_location)
+    logger = setuplog(log_path)
+    clean_up(save_location, logger)
     logger.info("pulizia cartella completata")
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
