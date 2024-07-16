@@ -1,17 +1,15 @@
 import sys
+
 sys.path.append("C:/Users/Alternanza/Documents/GitHub/alternanza")
 import uvicorn
 from fastapi import FastAPI, File, UploadFile
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 import shutil
 import os
-from io_utils import load_model
-from io_utils import load_image
-from image_utils import preproces_image
+from io_utils import load_model, load_image, save_image
+from image_utils import preproces_image, grayscale
 from predictor import predict
 import logging
-
-
 
 app = FastAPI()
 
@@ -25,7 +23,6 @@ log_path = original + '/log/info.txt'
 
 MODEL = load_model(MODEL_PATH)
 
-# os.makedirs(log_path, exist_ok=True)
 
 logger = logging.getLogger('my_logger')
 logger.setLevel(logging.DEBUG)
@@ -83,6 +80,26 @@ def upload_image(file: UploadFile = File(...)):
             "message": {"class": classe, "confidence": float(confidence)},
         }
     )
+
+
+@app.post("/grayscale/")
+def converct_grayscale(file: UploadFile = File(...)):
+
+    img_path = save_location + file.filename
+    create_save_location(save_location)
+    logger.info("creazione cartella completata")
+    save_file(file, img_path)
+    logger.info("salvataggio file completato")
+
+    img = load_image(img_path)
+    logger.info("immagine caricata")
+
+    img_gray = grayscale(img)
+    logger.info("immagine processata")
+
+    save_image(img_gray, img_path)
+    logger.info("immagine processata salvata")
+    return FileResponse(img_path)
 
 
 if __name__ == "__main__":
