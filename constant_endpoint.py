@@ -1,3 +1,3 @@
-PATH_UPLOAD = "/upload-image/"
+PATH_UPLOAD = "/predict-image/"
 
 PATH_GRAYSCALE = "/grayscale/"
